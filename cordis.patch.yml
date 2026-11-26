@@ -1,0 +1,5 @@
+- insert:
+    - id: composer-send-key
+      name: 'dsh-composer-send-key'
+      config:
+        mode: default

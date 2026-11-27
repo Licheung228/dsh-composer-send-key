@@ -1,16 +1,21 @@
 # Composer send key
 
-Switch the DeepSeek Harness message box send shortcut between two modes:
+[English](README.md) | [中文](README.zh.md)
 
-| Mode | Enter | Shift+Enter |
+Choose how the DeepSeek Harness message composer sends.
+
+| Mode | Enter | Send with |
 |---|---|---|
-| Default | Send | New line |
-| Edit-friendly | New line | Send |
+| Default | Sends | `Enter` |
+| Edit-friendly | Inserts a new line | `Shift + Enter` or `Ctrl + Enter` |
 
 ## Install
 
-In DeepSeek Harness, open **Plugins → Add plugin** and install
-`dsh-composer-send-key`. You can also install it from the command line:
+1. Open **Plugins** in DeepSeek Harness.
+2. Choose **Add plugin**.
+3. Enter `dsh-composer-send-key` and confirm.
+
+The package installs from npm, so no local path is needed. From a terminal:
 
 ```sh
 dsh plugin --profile <profile> add dsh-composer-send-key
@@ -18,44 +23,41 @@ dsh plugin --profile <profile> add dsh-composer-send-key
 
 ## Usage
 
-Open **Settings → General → Send shortcut** and pick a mode. The change
-applies immediately (no restart) and persists in your profile's settings
-document through the volatile `mode` field of the `composer-send-key` entry.
+Open **Settings → Send shortcut**. The page has two choices:
 
-You can also set it directly in the profile patch:
+- **Default** — `Enter` sends and `Shift + Enter` starts a new line.
+- **Edit-friendly** — `Enter` starts a new line. The shortcut row underneath chooses whether `Shift + Enter` or `Ctrl + Enter` sends.
+
+The change applies immediately and is stored in your profile. You can also set it in the profile patch:
 
 ```yaml
 - id: composer-send-key
   name: 'dsh-composer-send-key'
   config:
     mode: edit-friendly # or: default
+    combo: shift # or: ctrl
 ```
 
-## Behavior notes
+## Behavior
 
-- Ctrl/⌘+Enter keeps the built-in accelerated delivery; other modifiers are
-  never rewritten.
-- The busy-state Composer Enter preference (queue/steer) keeps working in
-  both modes.
-- In edit-friendly mode the two keys swap completely: with the suggestion
-  menu open, Enter inserts a newline and Shift+Enter confirms the highlighted
-  item (exactly the other gesture's stock behavior).
-- IME composition is left untouched: a composition-closing Enter never
-  submits or inserts a stray newline.
-- The Send button, the shortcuts reference page and its fixed Enter bindings
-  keep their shipped appearance and wording.
+- Scope is the message composer only. The sidebar terminal, search fields and other inputs keep their own `Enter` behavior.
+- **Default** leaves the shipped keyboard handling untouched.
+- **Edit-friendly with `Shift + Enter`** swaps the two gestures completely, including while the command or suggestion menu is open.
+- **Edit-friendly with `Ctrl + Enter`**: `Enter` and `Shift + Enter` insert new lines, `Ctrl + Enter` sends, and `⌘/Alt + Enter` keep their shipped behavior.
+- IME composition is untouched: a composition-closing `Enter` never submits or inserts a stray newline.
+- The busy-composer queue/steer preference, the Send button and the shortcuts reference keep their shipped behavior.
 - Disabling or removing the plugin restores the default behavior.
 
-## How it works
+## Development
 
-The shipped composer hardcodes Enter/Shift+Enter in its Lexical keymap and
-exposes no extension point for it. In edit-friendly mode this plugin swaps
-the `shiftKey` modifier of the original keydown event in the capture phase,
-before the composer's own handler runs, so every shipped guard (busy state,
-command-menu arbitration, IME window, held-key repeat) is preserved. In
-default mode the listener does nothing.
+The project is TypeScript. Host and Client sources live in `src/` and build to `lib/`:
 
-Because this relies on the composer's internal DOM (`[data-composer-card]`)
-and keyboard handling, re-verify the plugin after a DeepSeek Harness
-upgrade; if the internals change, the plugin falls back to the stock
-behavior rather than breaking the input.
+```sh
+pnpm install
+pnpm build      # typecheck, then bundle lib/index.js and lib/client.js
+pnpm typecheck
+```
+
+`src/index.ts` is the Host half (the two volatile preferences). `src/client/` holds the Settings page, the dictionaries and the composer-only key guard. The Client bundle is a single self-contained file that registers through the page's module loader.
+
+This plugin relies on the composer's internal DOM (`[data-composer-card]`) and keyboard handling. Re-check it after a DeepSeek Harness upgrade; if the internals change, the plugin falls back to the shipped behavior instead of breaking input.

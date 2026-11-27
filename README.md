@@ -42,8 +42,8 @@ The change applies immediately and is stored in your profile. You can also set i
 
 - Scope is the message composer only. The sidebar terminal, search fields and other inputs keep their own `Enter` behavior.
 - **Default** leaves the shipped keyboard handling untouched.
-- **Edit-friendly with `Shift + Enter`** swaps the two gestures completely, including while the command or suggestion menu is open.
-- **Edit-friendly with `Ctrl + Enter`**: `Enter` and `Shift + Enter` insert new lines, `Ctrl + Enter` sends, and `⌘/Alt + Enter` keep their shipped behavior.
+- **Edit-friendly** lets exactly one shortcut send: the chosen `Shift + Enter` or `Ctrl + Enter`. Every other Enter chord inserts a new line, including `⌘ + Enter` and the shipped `Ctrl/⌘ + Enter` accelerated delivery.
+- With the command or suggestion menu open, the chosen shortcut confirms the highlighted item and the other chords insert a new line.
 - IME composition is untouched: a composition-closing `Enter` never submits or inserts a stray newline.
 - The busy-composer queue/steer preference, the Send button and the shortcuts reference keep their shipped behavior.
 - Disabling or removing the plugin restores the default behavior.

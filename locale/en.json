@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "Composer send key",
-    "description": "Switch the message box send shortcut between two modes. Default: Enter sends and Shift+Enter inserts a new line; Edit-friendly: Enter inserts a new line and Shift+Enter sends. Switch anytime under Settings → General → Send shortcut; the change applies immediately and persists in your profile. Ctrl/⌘+Enter keeps its built-in accelerated delivery, and the busy-state Composer Enter preference (queue/steer) is unaffected. In edit-friendly mode the two keys swap completely: with the suggestion menu open, Enter inserts a new line and Shift+Enter confirms the highlighted item. The keyboard shortcuts reference still lists the fixed Enter bindings, and the Send button keeps its current look. Disabling the plugin restores the default behavior. This plugin adapts the composer's internal keyboard handling, so re-check it after a DeepSeek Harness upgrade."
+    "description": "Adds a Send shortcut page to Settings with two modes: Default (Enter sends, Shift+Enter inserts a new line) and Edit-friendly (Enter inserts a new line; choose Shift+Enter or Ctrl+Enter to send). The choice applies immediately and only affects the message composer."
   }
 }

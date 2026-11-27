@@ -3,3 +3,4 @@
       name: 'dsh-composer-send-key'
       config:
         mode: default
+        combo: shift

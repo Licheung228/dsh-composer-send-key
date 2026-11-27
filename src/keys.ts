@@ -1,12 +1,15 @@
 import { CTRL_COMBO, EDIT_FRIENDLY_MODE } from './constants.js'
 import type { KeyFacts, KeyRewrite, Mode, SendCombo } from './types.js'
 
+/** Strip the send modifiers and force the composer's native line break. */
+const NEWLINE_REWRITE: KeyRewrite = { shiftKey: true, ctrlKey: false, metaKey: false }
+
 /**
  * Decide which modifier the composer's keymap must see for this Enter.
  *
- * Default mode never rewrites. Edit-friendly keeps every other modifier
- * combination untouched: accelerated delivery (Meta/Alt) and IME-closing
- * Enter must keep their shipped meaning.
+ * Default mode never rewrites. In edit-friendly mode exactly one chord sends;
+ * every other Enter chord is normalized to a line break. Alt/AltGraph and
+ * composition are left to the composer.
  */
 export function resolveEnterRewrite(
   facts: KeyFacts,
@@ -14,18 +17,17 @@ export function resolveEnterRewrite(
   combo: SendCombo,
 ): KeyRewrite | null {
   if (mode !== EDIT_FRIENDLY_MODE) return null
-  if (facts.key !== 'Enter' || facts.composing || facts.altGraph) return null
-  if (facts.metaKey || facts.altKey) return null
+  if (facts.key !== 'Enter' || facts.composing || facts.altGraph || facts.altKey) return null
 
-  if (combo === CTRL_COMBO) {
-    // Ctrl+Shift+Enter is reserved by the shipped keymap.
-    if (facts.ctrlKey && facts.shiftKey) return null
-    if (facts.ctrlKey) return { ctrlKey: false }
-    if (facts.shiftKey) return null
-    return { shiftKey: true }
-  }
+  const isSendChord = combo === CTRL_COMBO
+    ? facts.ctrlKey && !facts.shiftKey && !facts.metaKey
+    : facts.shiftKey && !facts.ctrlKey && !facts.metaKey
 
-  // Shift+Enter sends: Ctrl/⌘+Enter keeps accelerated delivery.
-  if (facts.ctrlKey) return null
-  return { shiftKey: !facts.shiftKey }
+  if (isSendChord) return combo === CTRL_COMBO ? { ctrlKey: false } : { shiftKey: false }
+
+  // Only the chosen chord sends. This includes the shipped Ctrl/⌘ accelerated
+  // delivery: any other chord inserts a line break instead of submitting.
+  if (facts.ctrlKey || facts.metaKey) return { ...NEWLINE_REWRITE }
+  if (facts.shiftKey) return null
+  return { shiftKey: true }
 }

@@ -25,6 +25,7 @@ export interface KeyFacts {
 export interface KeyRewrite {
   shiftKey?: boolean
   ctrlKey?: boolean
+  metaKey?: boolean
 }
 
 /** Minimal observable the slot renderer binds into React hooks. */

@@ -3,7 +3,7 @@ import { resolveEnterRewrite } from '../keys.js'
 import type { KeyFacts, SettingsValue } from '../types.js'
 import { isComposerEditable } from './dom.js'
 
-type Modifier = 'shiftKey' | 'ctrlKey'
+type Modifier = 'shiftKey' | 'ctrlKey' | 'metaKey'
 
 function keyFacts(event: KeyboardEvent, composingRecently: boolean): KeyFacts {
   return {
@@ -63,6 +63,7 @@ export function installComposerKeyGuard(read: () => SettingsValue): () => void {
     if (rewrite === null) return
     if (rewrite.shiftKey !== undefined) setModifier(event, 'shiftKey', rewrite.shiftKey, warned)
     if (rewrite.ctrlKey !== undefined) setModifier(event, 'ctrlKey', rewrite.ctrlKey, warned)
+    if (rewrite.metaKey !== undefined) setModifier(event, 'metaKey', rewrite.metaKey, warned)
   }
 
   const options: AddEventListenerOptions = { capture: true }

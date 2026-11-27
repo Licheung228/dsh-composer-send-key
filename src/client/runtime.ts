@@ -5,6 +5,7 @@ import { readSettings } from '../settings.js'
 import type { ClientContext, CreateElement, Mode, SendCombo, SettingsValue } from '../types.js'
 import { installComposerKeyGuard } from './keyboard.js'
 import { DICTIONARIES } from './locales.js'
+import { createSectionIcon } from './section-icon.js'
 import { createSettingsPage } from './settings-page.js'
 import { createStore } from './store.js'
 import { CSS } from './styles.js'
@@ -90,4 +91,10 @@ export function createRuntime(ctx: ClientContext, h: CreateElement): void {
       t,
     }),
   }, page))
+
+  const icon = createSectionIcon(h)
+  ctx.slots.inject('settings.section.icon', () => ctx.slots.register({
+    name: 'settings.section.icon',
+    id: SETTINGS_SECTION_ID,
+  }, icon))
 }

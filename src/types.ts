@@ -73,6 +73,12 @@ export interface SettingsPageProps {
   t: Translate
 }
 
+/** Props the slot renderer passes to the settings tab icon. */
+export interface SettingsSectionIconProps {
+  size: number
+  active: boolean
+}
+
 /** Live snapshot of one volatile settings namespace. */
 export interface ConfigForm {
   getSnapshot: () => { value: unknown }
